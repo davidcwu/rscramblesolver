@@ -20,16 +20,18 @@ module Rscramblesolver
 
 			end
 
-			def coordinates
+			def coordinates(tile)
+
+			end
 	end
 
 	class Coordinates
-		attr_reader :x, :y
+		attr_reader :x
+		attr_reader :y
 
 		def initialize(args)
 			@x = args[:x]
 			@y = args[:y]
 		end
-
 	end
 end
