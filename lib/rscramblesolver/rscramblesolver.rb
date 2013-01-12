@@ -25,6 +25,13 @@ module Rscramblesolver
 			end
 	end
 
+	def TileAttributes
+	end
+
+	def Tile
+	end
+
+
 	class Coordinates
 		attr_reader :x
 		attr_reader :y
