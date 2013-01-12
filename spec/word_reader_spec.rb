@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-require 'rscramblesolver/dictionary/words_reader'
+require 'rscramblesolver/dictionary/word_reader'
 
 
 include Rscramblesolver::Dictionary

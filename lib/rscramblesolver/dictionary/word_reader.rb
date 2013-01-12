@@ -1,10 +1,9 @@
 module Rscramblesolver
 	module Dictionary
 		class WordReader
-			attr_reader :word_list
 
-			def initialize
-				@word_list = parse_file(words_directory)
+			def word_list
+				@word_list ||= parse_file(words_directory)
 			end
 
 			private
