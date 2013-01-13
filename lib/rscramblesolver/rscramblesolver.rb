@@ -1,4 +1,44 @@
 module Rscramblesolver
+
+	class Search
+		attr_reader :board, :dictionary, :search_results
+
+		def initialize(args)
+			@board 					= args[:board]
+			@dictionary 		= args[:dictionary] || SimpleDictionary.new
+			@search_results = args[:results_container] || SearchResults.new
+		end
+
+		def execute
+			board.each_tile { |tile| execute_search_starting_on(tile) }
+			return search_results
+		end
+
+		private
+
+			def execute_search_starting_on(tile)
+				execute_search_starting_on_helper(board, tile, TileContainer.new)
+			end
+
+			def execute_search_starting_on_helper(board, tile, tilecontainer)
+				word_so_far = tilecontainer.to_word
+
+				search_results.add(tilecontainer) if dictionary.real_word?(word_so_far)
+
+				# TODO: optimizing by pruning using prefixes here
+
+				board.unvisited_neighbors(tile).each do |neighbor|
+					board.visit(neighbor)
+
+					new_tilecontainer = tilecontainer.add(neighbor)
+					execute_search_starting_on_helper(board, neighbor, new_tilecontainer)
+
+					board.unvisit(neighbor)
+				end
+					
+			end
+	end
+
 	class Board
 
 		def initialize(args)
@@ -10,6 +50,9 @@ module Rscramblesolver
 		end
 
 		def visit(tile)
+		end
+
+		def unvisit(tile)
 		end
 
 		def unvisited_neighbors(tile)
@@ -25,13 +68,6 @@ module Rscramblesolver
 			end
 	end
 
-	def TileAttributes
-	end
-
-	def Tile
-	end
-
-
 	class Coordinates
 		attr_reader :x
 		attr_reader :y
@@ -41,4 +77,38 @@ module Rscramblesolver
 			@y = args[:y]
 		end
 	end
+
+	class TileAttributes
+	end
+
+	class Tile
+	end
+
+	class TileContainer
+		attr_reader :contents
+
+		def intialize(contents = [])
+
+		end
+			
+		def add
+		end
+	end
+
+	class SearchResults
+		attr_reader :results
+
+		def initialize
+			self.results = []
+		end
+
+		def add(result)
+			results << result
+		end
+
+		def to_s
+			puts results
+		end
+	end
+
 end
