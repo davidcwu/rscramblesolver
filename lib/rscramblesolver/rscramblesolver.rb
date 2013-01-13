@@ -84,14 +84,17 @@ module Rscramblesolver
 	class Tile
 	end
 
+	# TODO: I could probably change this name to something more generic like an immutablelist
 	class TileContainer
-		attr_reader :contents
+	  attr_reader :contents
 
-		def intialize(contents = [])
-
+		def initialize(contents = [])
+			@contents = contents
 		end
 			
-		def add
+		def add(tile)
+			new_contents = contents.clone << tile
+			return TileContainer.new(new_contents)
 		end
 	end
 
