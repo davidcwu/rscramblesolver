@@ -50,9 +50,11 @@ module Rscramblesolver
 		end
 
 		def visit(tile)
+			tile.visit
 		end
 
 		def unvisit(tile)
+			tile.unvisit
 		end
 
 		def unvisited_neighbors(tile)
@@ -82,6 +84,22 @@ module Rscramblesolver
 	end
 
 	class Tile
+		attr_reader :tileattributes, :visited
+
+		def initialize(args) 
+			@tileattributes = args[:tileattributes]
+			@visited       = args[:visited] || false
+		end
+
+		def visit
+			@visited = true
+			return self
+		end
+
+		def unvisit
+			@visited = false
+			return self
+		end
 	end
 
 	# TODO: I could probably change this name to something more generic like an immutablelist
