@@ -126,7 +126,7 @@ module Rscramblesolver
 							x: coordinates.x + step[0],
 							y: coordinates.y + step[1]
 						)
-					neighbors << @tile_hash[neighbor_coordinate] if on_board(neighbor_coordinate)
+					neighbors << @tile_hash[neighbor_coordinate] if @tile_hash.has_key?(neighbor_coordinate)
 				end
 
 				return neighbors
@@ -141,6 +141,11 @@ module Rscramblesolver
 		def initialize(args)
 			@x = args[:x]
 			@y = args[:y]
+		end
+
+		def ==(other)
+			return false unless other.respond_to?(:x) and other.respond_to?(:y)
+			return x == other.x && y == other.y
 		end
 	end
 
