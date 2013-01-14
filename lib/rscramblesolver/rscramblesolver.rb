@@ -39,8 +39,51 @@ module Rscramblesolver
 			end
 	end
 
+	# Handles the I/O involved in creating a board
+	# I/O always feels ugly. Is there a way to make this elegant?
+	class BoardCreator
+
+		class << self
+			@width = @height = 4
+		end
+
+		def initialize
+			@tiles = []
+		end
+
+		def create_board
+			puts "Enter letter, points, and multiplier separated by spaces"
+			puts "ie) W 2 3"
+
+			BoardCreator.width.times do |width|
+				BoardCreator.height.times do |height|
+					puts "Width: #{width}, Height: #{height}"
+
+					tiles[width] ||= []
+					tiles[width] << create_tile_from_user_input
+				end
+			end
+
+			return Board.new(tiles)
+		end
+
+		private
+
+			def create_tile_from_user_input
+				letter, points, multiplier = gets.split
+				return Tile.new(
+						tileattributes: TileAttributes.new(
+								letter: letter,
+								points: points.to_i,
+								multiplier: multiplier.to_i
+							)
+					)
+			end
+	end
+
 	class Board
 
+		# Tiles is a 2d array
 		def initialize(args)
 			@tiles = args[:tiles]
 		end
@@ -58,15 +101,28 @@ module Rscramblesolver
 		end
 
 		def unvisited_neighbors(tile)
+			neighbors(tile).select { |neighbor| !neighbor.visited }
 		end
 
 		private
 			def neighbors(tile)
+				neighbors = []
 
+				tile_coordinates = coordinates(tile)
+
+				[[-1, -1], [-1, 0], [1, 0], [0, -1], [0, 1], [1, -1], [1, 0], [1, 1]].each do |step|
+					neighbor_coordinate = Coordinates.new(
+							x: tile_coordinates.x + step[0],
+							y: tile_coordinates.y + step[1]
+						)
+					neighbors << tile_at(neighbor_coordinate) if on_board(neighbor_coordinate)
+				end
+
+				return neighbors
 			end
 
 			def coordinates(tile)
-
+				# This should delegate to tile?
 			end
 	end
 
@@ -81,6 +137,18 @@ module Rscramblesolver
 	end
 
 	class TileAttributes
+		attr_reader :letter, :points, :multiplier
+
+		def initialize(args)
+			@letter 		= args[:letter]
+			@points     = args[:points]     || 1
+			@multiplier = args[:multiplier] || 1
+		end
+
+		def score
+			points * multiplier
+		end
+
 	end
 
 	class Tile

@@ -6,7 +6,7 @@ describe Board do
 
 	before(:each) do
 		@board = Board.new(
-			tiles: []
+			tiles: [[]]
 		)
 	end
 
@@ -27,6 +27,20 @@ describe Board do
 		it 'should respond to unvisited_neighbors' do
 			@board.should respond_to(:unvisited_neighbors).with(1).argument
 		end
+
+    # This test feels weird. I need to look up more rspec/stubbing techniques
+    it 'should return unvisited neighbors' do 
+      @main_tile = mock(Tile)
+      @tile1 = mock(Tile)
+      @tile2 = mock(Tile)
+
+      @tile1.stub(:visited).and_return(true)
+      @tile2.stub(:visited).and_return(false)
+
+      @board.stub(:neighbors).and_return([@tile1, @tile2])
+
+      @board.unvisited_neighbors(@main_tile).size.should == 1
+    end
 	end
 
 end
