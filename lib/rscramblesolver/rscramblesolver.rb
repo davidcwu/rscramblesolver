@@ -91,6 +91,7 @@ module Rscramblesolver
 	end
 
 	class Board
+		attr_reader :tile_hash
 
 		# Tiles is a hash from coordinates => tiles
 		def initialize(args)
@@ -98,19 +99,19 @@ module Rscramblesolver
 		end
 
 		def add_tile(coordinates, tile)
-			@tile_hash[coordinates] = tile
+			tile_hash[coordinates] = tile
 		end
 
 		def each_tile_with_coordinate
-			@tile_hash.each { |key, value| yield(value, key) }
+			tile_hash.each { |key, value| yield(value, key) }
 		end
 
 		def visit(coordinates)
-			@tile_hash[coordinates].visit
+			tile_hash[coordinates].visit
 		end
 
 		def unvisit(coordinates)
-			@tile_hash[coordinates].unvisit
+			tile_hash[coordinates].unvisit
 		end
 
 		def unvisited_neighbors(coordinates)
@@ -121,12 +122,12 @@ module Rscramblesolver
 			def neighbors(coordinates)
 				neighbors = []
 
-				[[-1, -1], [-1, 0], [1, 0], [0, -1], [0, 1], [1, -1], [1, 0], [1, 1]].each do |step|
+				[[-1, -1], [-1, 0], [-1, 1], [0, -1], [0, 1], [1, -1], [1, 0], [1, 1]].each do |step|
 					neighbor_coordinate = Coordinates.new(
 							x: coordinates.x + step[0],
 							y: coordinates.y + step[1]
 						)
-					neighbors << @tile_hash[neighbor_coordinate] if @tile_hash.has_key?(neighbor_coordinate)
+					neighbors << tile_hash[neighbor_coordinate] if tile_hash.has_key?(neighbor_coordinate)
 				end
 
 				return neighbors
@@ -143,9 +144,17 @@ module Rscramblesolver
 			@y = args[:y]
 		end
 
-		def ==(other)
+		def eql?(other)
 			return false unless other.respond_to?(:x) and other.respond_to?(:y)
 			return x == other.x && y == other.y
+		end
+
+		def hash
+			[x, y].hash
+		end
+
+		def to_s
+			"x: #{x}, y: #{y}"
 		end
 	end
 

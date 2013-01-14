@@ -30,17 +30,31 @@ describe Board do
 
     # This test feels weird. I need to look up more rspec/stubbing techniques
     it 'should return unvisited neighbors' do 
-      @main_tile = mock(Tile)
-      @tile1 = mock(Tile)
-      @tile2 = mock(Tile)
 
-      @tile1.stub(:visited).and_return(true)
-      @tile2.stub(:visited).and_return(false)
+      main_tile      = mock(Tile)
+      right_tile     = mock(Tile)
+      down_tile      = mock(Tile)
+      downright_tile = mock(Tile)
 
-      @board.stub(:neighbors).and_return([@tile1, @tile2])
+      right_tile.stub(:visited).and_return(true)
+      down_tile.stub(:visited).and_return(false)
+      downright_tile.stub(:visited).and_return(false)
 
-      @board.unvisited_neighbors(@main_tile).size.should == 1
+      main_coordinates = Coordinates.new(x:0, y:0)
+      tile_hash = {
+        main_coordinates => main_tile,
+        Coordinates.new(x:0, y:1) => right_tile,
+        Coordinates.new(x:1, y:0) => down_tile,
+        Coordinates.new(x:1, y:1) => downright_tile
+      }
+
+      @board.stub(:tile_hash).and_return(tile_hash)
+
+      unvisited_neighbors = @board.unvisited_neighbors(main_coordinates)
+      unvisited_neighbors.should include(down_tile)
+      unvisited_neighbors.should include(downright_tile)
     end
+
 	end
 
 end
