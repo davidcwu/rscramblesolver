@@ -42,32 +42,41 @@ module Rscramblesolver
 	# Handles the I/O involved in creating a board
 	# I/O always feels ugly. Is there a way to make this elegant?
 	class BoardCreator
+		attr_reader :width, :height
 
-		class << self
-			@width = @height = 4
-		end
-
-		def initialize
-			@tiles = []
+		def initialize(args)
+			@width  = args[:width]  || 4
+			@height = args[:height] || 4
 		end
 
 		def create_board
 			puts "Enter letter, points, and multiplier separated by spaces"
 			puts "ie) W 2 3"
 
-			BoardCreator.width.times do |width|
-				BoardCreator.height.times do |height|
-					puts "Width: #{width}, Height: #{height}"
+			0.upto(width - 1) do |width_index|
+				0.upto(height - 1) do |height_index|
+					puts "Width: #{width_index}, Height: #{height_index}"
 
-					tiles[width] ||= []
-					tiles[width] << create_tile_from_user_input
+					coordinate = Coordinates.new(
+							x: width_index, 
+							y: height_index
+						)
+					tile = create_tile_from_user_input
+					tile_hash[coordinate] = tile
+
 				end
 			end
 
-			return Board.new(tiles)
+			return Board.new(
+					tile_hash: tile_hash
+				)
 		end
 
 		private
+
+			def tile_hash
+				@tile_hash ||= Hash.new
+			end
 
 			def create_tile_from_user_input
 				letter, points, multiplier = gets.split
@@ -83,47 +92,46 @@ module Rscramblesolver
 
 	class Board
 
-		# Tiles is a 2d array
+		# Tiles is a hash from coordinates => tiles
 		def initialize(args)
-			@tiles = args[:tiles]
+			@tile_hash = args[:tile_hash]
 		end
 
-		def each_tile
-			@tiles.each
+		def add_tile(coordinates, tile)
+			@tile_hash[coordinates] = tile
 		end
 
-		def visit(tile)
-			tile.visit
+		def each_tile_with_coordinate
+			@tile_hash.each { |key, value| yield(value, key) }
 		end
 
-		def unvisit(tile)
-			tile.unvisit
+		def visit(coordinates)
+			@tile_hash[coordinates].visit
 		end
 
-		def unvisited_neighbors(tile)
-			neighbors(tile).select { |neighbor| !neighbor.visited }
+		def unvisit(coordinates)
+			@tile_hash[coordinates].unvisit
+		end
+
+		def unvisited_neighbors(coordinates)
+			neighbors(coordinates).select { |neighbor| !neighbor.visited }
 		end
 
 		private
-			def neighbors(tile)
+			def neighbors(coordinates)
 				neighbors = []
-
-				tile_coordinates = coordinates(tile)
 
 				[[-1, -1], [-1, 0], [1, 0], [0, -1], [0, 1], [1, -1], [1, 0], [1, 1]].each do |step|
 					neighbor_coordinate = Coordinates.new(
-							x: tile_coordinates.x + step[0],
-							y: tile_coordinates.y + step[1]
+							x: coordinates.x + step[0],
+							y: coordinates.y + step[1]
 						)
-					neighbors << tile_at(neighbor_coordinate) if on_board(neighbor_coordinate)
+					neighbors << @tile_hash[neighbor_coordinate] if on_board(neighbor_coordinate)
 				end
 
 				return neighbors
 			end
 
-			def coordinates(tile)
-				# This should delegate to tile?
-			end
 	end
 
 	class Coordinates
@@ -140,7 +148,7 @@ module Rscramblesolver
 		attr_reader :letter, :points, :multiplier
 
 		def initialize(args)
-			@letter 		= args[:letter]
+			@letter 		= args[:letter].upcase
 			@points     = args[:points]     || 1
 			@multiplier = args[:multiplier] || 1
 		end
@@ -149,6 +157,9 @@ module Rscramblesolver
 			points * multiplier
 		end
 
+		def to_s
+			"#{letter} #{points} #{multiplier}"
+		end
 	end
 
 	class Tile

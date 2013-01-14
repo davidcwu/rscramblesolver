@@ -12,8 +12,8 @@ describe Board do
 
 	describe :each_tile do 
 
-		it 'should respond to each_tile' do
-			@board.should respond_to(:each_tile)
+		it 'should respond to each_tile_with_coordinate' do
+			@board.should respond_to(:each_tile_with_coordinate)
 		end
 	end
 
