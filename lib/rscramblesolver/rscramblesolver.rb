@@ -6,7 +6,7 @@ module Rscramblesolver
 		def initialize(args)
 			@board 					= args[:board]
 			@dictionary 		= args[:dictionary] || SimpleDictionary.new
-			@search_results = args[:results_container] || SearchResults.new
+			@search_results = SearchResults.new
 		end
 
 		def execute
@@ -20,6 +20,7 @@ module Rscramblesolver
 				execute_search_starting_on_helper(board, tile, TileContainer.new)
 			end
 
+			# TODO: Iterative Deepening
 			def execute_search_starting_on_helper(board, tile, tilecontainer)
 				word_so_far = tilecontainer.to_word
 

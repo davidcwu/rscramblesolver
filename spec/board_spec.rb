@@ -28,7 +28,6 @@ describe Board do
 			@board.should respond_to(:unvisited_neighbors).with(1).argument
 		end
 
-    # This test feels weird. I need to look up more rspec/stubbing techniques
     it 'should return unvisited neighbors' do 
 
       main_tile      = mock(Tile)
@@ -51,6 +50,7 @@ describe Board do
       @board.stub(:tile_hash).and_return(tile_hash)
 
       unvisited_neighbors = @board.unvisited_neighbors(main_coordinates)
+
       unvisited_neighbors.should include(down_tile)
       unvisited_neighbors.should include(downright_tile)
     end
