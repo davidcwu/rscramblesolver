@@ -17,7 +17,12 @@ module Rscramblesolver
 		private
 
 			def execute_search_starting_on(coordinate, tile)
-				execute_search_starting_on_helper(board, coordinate, tile, TileContainer.new)
+				board.visit(coordinate)
+
+				tile_container = TileContainer.new.add(tile)
+				execute_search_starting_on_helper(board, coordinate, tile, tile_container)
+
+				board.unvisit(coordinate)
 			end
 
 			# TODO: Iterative Deepening
@@ -28,8 +33,6 @@ module Rscramblesolver
 
 				# TODO: optimizing by pruning using prefixes here
 				board.unvisited_neighbors_hash(coordinate).each do |neighbor_coordinate, neighbor|
-
-					puts board.unvisited_neighbors_hash(coordinate)
 
 					board.visit(neighbor_coordinate)
 
@@ -213,9 +216,13 @@ module Rscramblesolver
 		end
 
 		def to_word
-			str = ""
+			str = ''
 			contents.each { |tile| str << tile.letter }
 			return str
+		end
+
+		def to_s
+			self.to_word
 		end
 	end
 
@@ -231,7 +238,7 @@ module Rscramblesolver
 		end
 
 		def to_s
-			puts results
+			results
 		end
 	end
 

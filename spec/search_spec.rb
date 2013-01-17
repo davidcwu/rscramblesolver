@@ -16,6 +16,8 @@ describe Search do
   describe :execute do
     it "should execute and return the right results" do
       # Set up the board
+      #     D T
+      #     R A
       upleft_tile    = create_tile_with_letter('D')
       upright_tile   = create_tile_with_letter('T')
       downleft_tile  = create_tile_with_letter('R')
@@ -54,8 +56,10 @@ describe Search do
           dictionary: dictionary
         )
 
+      # Sort and compare the list
       search_results = search.execute
-
+      search_results_words = search_results.results.map { |tilecontainer| tilecontainer.to_word }
+      search_results_words.sort.should == word_list.sort
     end
 
     def create_tile_with_letter(letter)
