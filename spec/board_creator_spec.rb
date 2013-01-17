@@ -24,12 +24,10 @@ describe BoardCreator do
 
       board = @boardcreator.create_board
 
-      tiles = []
-      board.each_tile_with_coordinate { |tile, coordinate| tiles << tile }
+      tile_hash = board.tile_hash
+      tile_hash.size.should == 4
 
-      tiles.size.should == 4
-
-      tileattribute_strings = tiles.map { |tile| tile.tileattributes.to_s }
+      tileattribute_strings = tile_hash.values.map { |tile| tile.tileattributes.to_s }
 
       [input1, input2, input3, input4].each do |input|
         tileattribute_strings.should include(input)

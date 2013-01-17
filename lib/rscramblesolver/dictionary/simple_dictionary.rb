@@ -2,7 +2,7 @@ module Rscramblesolver
 	module Dictionary
     class SimpleDictionary
 
-      def initialize(args)
+      def initialize(args = {})
         @word_reader = args[:word_reader] || WordReader.new
       end
 

@@ -3,38 +3,40 @@ module Rscramblesolver
 	class Search
 		attr_reader :board, :dictionary, :search_results
 
-		def initialize(args)
+		def initialize(args = {})
 			@board 					= args[:board]
-			@dictionary 		= args[:dictionary] || SimpleDictionary.new
+			@dictionary 		= args[:dictionary] || SimpleDictionary.new(Hash.new)
 			@search_results = SearchResults.new
 		end
 
 		def execute
-			board.each_tile { |tile| execute_search_starting_on(tile) }
+			board.tile_hash.each { |coordinate, tile| execute_search_starting_on(coordinate, tile) }
 			return search_results
 		end
 
 		private
 
-			def execute_search_starting_on(tile)
-				execute_search_starting_on_helper(board, tile, TileContainer.new)
+			def execute_search_starting_on(coordinate, tile)
+				execute_search_starting_on_helper(board, coordinate, tile, TileContainer.new)
 			end
 
 			# TODO: Iterative Deepening
-			def execute_search_starting_on_helper(board, tile, tilecontainer)
+			def execute_search_starting_on_helper(board, coordinate, tile, tilecontainer)
 				word_so_far = tilecontainer.to_word
 
 				search_results.add(tilecontainer) if dictionary.real_word?(word_so_far)
 
 				# TODO: optimizing by pruning using prefixes here
+				board.unvisited_neighbors_hash(coordinate).each do |neighbor_coordinate, neighbor|
 
-				board.unvisited_neighbors(tile).each do |neighbor|
-					board.visit(neighbor)
+					puts board.unvisited_neighbors_hash(coordinate)
+
+					board.visit(neighbor_coordinate)
 
 					new_tilecontainer = tilecontainer.add(neighbor)
-					execute_search_starting_on_helper(board, neighbor, new_tilecontainer)
+					execute_search_starting_on_helper(board, neighbor_coordinate, neighbor, new_tilecontainer)
 
-					board.unvisit(neighbor)
+					board.unvisit(neighbor_coordinate)
 				end
 					
 			end
@@ -45,7 +47,7 @@ module Rscramblesolver
 	class BoardCreator
 		attr_reader :width, :height
 
-		def initialize(args)
+		def initialize(args = {})
 			@width  = args[:width]  || 4
 			@height = args[:height] || 4
 		end
@@ -94,17 +96,13 @@ module Rscramblesolver
 	class Board
 		attr_reader :tile_hash
 
-		# Tiles is a hash from coordinates => tiles
-		def initialize(args)
-			@tile_hash = args[:tile_hash]
+		# Tiles_hash is a hash from coordinates => tiles
+		def initialize(args = {})
+			@tile_hash = args[:tile_hash] || [[]]
 		end
 
 		def add_tile(coordinates, tile)
 			tile_hash[coordinates] = tile
-		end
-
-		def each_tile_with_coordinate
-			tile_hash.each { |key, value| yield(value, key) }
 		end
 
 		def visit(coordinates)
@@ -115,20 +113,20 @@ module Rscramblesolver
 			tile_hash[coordinates].unvisit
 		end
 
-		def unvisited_neighbors(coordinates)
-			neighbors(coordinates).select { |neighbor| !neighbor.visited }
+		def unvisited_neighbors_hash(coordinates)
+			neighbors_hash(coordinates).select { |coordinate, neighbor| !neighbor.visited }
 		end
 
 		private
-			def neighbors(coordinates)
-				neighbors = []
+			def neighbors_hash(coordinates)
+				neighbors = {}
 
 				[[-1, -1], [-1, 0], [-1, 1], [0, -1], [0, 1], [1, -1], [1, 0], [1, 1]].each do |step|
 					neighbor_coordinate = Coordinates.new(
 							x: coordinates.x + step[0],
 							y: coordinates.y + step[1]
 						)
-					neighbors << tile_hash[neighbor_coordinate] if tile_hash.has_key?(neighbor_coordinate)
+					neighbors[neighbor_coordinate] = tile_hash[neighbor_coordinate] if tile_hash.has_key?(neighbor_coordinate)
 				end
 
 				return neighbors
@@ -140,7 +138,7 @@ module Rscramblesolver
 		attr_reader :x
 		attr_reader :y
 
-		def initialize(args)
+		def initialize(args = {})
 			@x = args[:x]
 			@y = args[:y]
 		end
@@ -162,7 +160,7 @@ module Rscramblesolver
 	class TileAttributes
 		attr_reader :letter, :points, :multiplier
 
-		def initialize(args)
+		def initialize(args = {})
 			@letter 		= args[:letter].upcase
 			@points     = args[:points]     || 1
 			@multiplier = args[:multiplier] || 1
@@ -180,7 +178,7 @@ module Rscramblesolver
 	class Tile
 		attr_reader :tileattributes, :visited
 
-		def initialize(args) 
+		def initialize(args = {}) 
 			@tileattributes = args[:tileattributes]
 			@visited       = args[:visited] || false
 		end
@@ -194,6 +192,11 @@ module Rscramblesolver
 			@visited = false
 			return self
 		end
+
+		def letter
+			@tileattributes.letter
+		end
+
 	end
 
 	# TODO: I could probably change this name to something more generic like an immutablelist
@@ -208,13 +211,19 @@ module Rscramblesolver
 			new_contents = contents.clone << tile
 			return TileContainer.new(new_contents)
 		end
+
+		def to_word
+			str = ""
+			contents.each { |tile| str << tile.letter }
+			return str
+		end
 	end
 
 	class SearchResults
 		attr_reader :results
 
 		def initialize
-			self.results = []
+			@results = []
 		end
 
 		def add(result)

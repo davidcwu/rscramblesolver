@@ -56,9 +56,7 @@ describe Tile do
 
   describe 'visit' do
     before(:each) do
-      @tile = Tile.new(
-          {}
-        )
+      @tile = Tile.new
     end
 
     it "should return itself" do 
@@ -72,9 +70,7 @@ describe Tile do
 
   describe 'unvisit' do
     before(:each) do
-      @tile = Tile.new(
-          {}
-        )
+      @tile = Tile.new
     end
 
     it "should return itself" do 

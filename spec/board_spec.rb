@@ -5,15 +5,13 @@ include Rscramblesolver
 describe Board do
 
 	before(:each) do
-		@board = Board.new(
-			tiles: [[]]
-		)
+		@board = Board.new
 	end
 
-	describe :each_tile do 
+	describe :tile_hash do 
 
-		it 'should respond to each_tile_with_coordinate' do
-			@board.should respond_to(:each_tile_with_coordinate)
+		it 'should respond to tile_hash' do
+			@board.should respond_to(:tile_hash)
 		end
 	end
 
@@ -23,9 +21,9 @@ describe Board do
 		end
 	end
 
-	describe :unvisited_neighbors do
-		it 'should respond to unvisited_neighbors' do
-			@board.should respond_to(:unvisited_neighbors).with(1).argument
+	describe :unvisited_neighbors_hash do
+		it 'should respond to unvisited_neighbors_hash' do
+			@board.should respond_to(:unvisited_neighbors_hash).with(1).argument
 		end
 
     it 'should return unvisited neighbors' do 
@@ -49,10 +47,10 @@ describe Board do
 
       @board.stub(:tile_hash).and_return(tile_hash)
 
-      unvisited_neighbors = @board.unvisited_neighbors(main_coordinates)
+      unvisited_neighbor_tiles = @board.unvisited_neighbors_hash(main_coordinates).values
 
-      unvisited_neighbors.should include(down_tile)
-      unvisited_neighbors.should include(downright_tile)
+      unvisited_neighbor_tiles.should include(down_tile)
+      unvisited_neighbor_tiles.should include(downright_tile)
     end
 
 	end

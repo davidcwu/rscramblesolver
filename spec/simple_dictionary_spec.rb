@@ -10,10 +10,7 @@ describe SimpleDictionary do
   describe :real_word? do
     before(:each) do 
       @word_list = ['david', 'wu']
-      @dictionary = SimpleDictionary.new(
-          # we don't really need to pass in anything but an empty hash
-          {}
-        )
+      @dictionary = SimpleDictionary.new
       @dictionary.stub(:word_list).and_return(@word_list)
     end
 
