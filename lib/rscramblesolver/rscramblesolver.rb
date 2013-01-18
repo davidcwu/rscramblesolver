@@ -26,6 +26,7 @@ module Rscramblesolver
 			end
 
 			# TODO: Iterative Deepening
+			# TODO: Word scores
 			def execute_search_starting_on_helper(board, coordinate, tile, tilecontainer)
 				word_so_far = tilecontainer.to_word
 
