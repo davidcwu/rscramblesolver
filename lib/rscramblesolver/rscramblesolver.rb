@@ -1,6 +1,7 @@
 module Rscramblesolver
 
 	class Search
+		include Rscramblesolver::Dictionary
 		attr_reader :board, :dictionary, :search_results
 
 		def initialize(args = {})
