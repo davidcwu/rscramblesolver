@@ -7,11 +7,14 @@ module Rscramblesolver
 			end
 
 			private
+				include Zlib
 
-				def parse_file(dir)
+
+				def parse_file(path)
 					word_list = []
-					open(dir, 'r') do |file|
-						file.each_line do |line|
+					open(path, 'r') do |file|
+						unzipped_file = Zlib::GzipReader.new(file)
+						unzipped_file.each_line do |line|
 							word_list << line.chomp
 						end
 					end
@@ -20,7 +23,7 @@ module Rscramblesolver
 				end
 
 				def words_directory
-					"data/words"
+					"data/words.dat.gz"
 				end
 		end
 	end
