@@ -199,7 +199,15 @@ module Rscramblesolver
 		end
 
 		def letter
-			@tileattributes.letter
+			tileattributes.letter
+		end
+
+		def multiplier
+			tileattributes.multiplier
+		end
+
+		def points
+			tileattributes.points
 		end
 
 	end
@@ -223,9 +231,22 @@ module Rscramblesolver
 			return str
 		end
 
+		def score
+			total_multipliers * total_points
+		end
+
 		def to_s
 			self.to_word
 		end
+
+		private
+			def total_multipliers
+				contents.inject(1) { |multiplier, tile| multiplier *= tile.multiplier }
+			end
+
+			def total_points
+				contents.inject(0) { |sum, tile| sum += tile.points }
+			end
 	end
 
 	class SearchResults
