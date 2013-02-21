@@ -6,9 +6,6 @@ module Rscramblesolver
     def add
     end
 
-    def contains
-    end
-
     def valid_prefix?
     end
   end

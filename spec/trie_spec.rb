@@ -18,12 +18,6 @@ describe Trie do
     end
   end
 
-  describe :contains do
-    it 'should respond to contains' do
-      trie.should respond_to(:contains)
-    end
-  end
-
   describe :valid_prefix? do
     it 'should respond_to valid_prefix?' do
       trie.should respond_to(:valid_prefix?)
