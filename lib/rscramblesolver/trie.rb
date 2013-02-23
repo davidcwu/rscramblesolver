@@ -3,20 +3,17 @@ module Rscramblesolver
     attr_reader :root
 
     def initialize()
-      @root = TrieBaseNode.new
+      @root = TrieNode.new
     end
 
     # TODO: find a way to make this more elegant
     def add(item)
-      item.each_char.inject(root) do |node, component|
-        next_node = node.children[component]
+      item.each_char.inject(root) do |node, letter|
+        next_node = node.child(letter)
 
         unless next_node
-          node.children[component] = TrieNode.new(
-              :value => component,
-            )
+          node.add_child(letter)
         end
-
       end
 
       return self
@@ -24,8 +21,9 @@ module Rscramblesolver
 
     # TODO: find a way to make this more elegant
     def valid_prefix?(item)
-      item.each_char.inject(root) do |node, component|
-        next_node = node.children[component]
+      item.each_char.inject(root) do |node, letter|
+        # DEFECT: where next_node.value = letter
+        next_node = node.child(letter)
 
         if next_node
           node = next_node
@@ -39,28 +37,23 @@ module Rscramblesolver
   end
 
   # Consider pulling these classes out into a separate class
-  class TrieBaseNode
-    attr_reader :children
+  class TrieNode
+    attr_reader :children, :value
 
     def initialize(args = {})
       @children = args[:children] || {}
+      @value     = args[:value]     || nil
     end
 
-    # Kind of hacky
-    def root?
-      @value.nil?
+    def child(letter)
+      return children[letter.downcase]
+    end
+
+    def add_child(letter)
+      node = child(letter) ||  TrieNode.new( :value => letter.downcase )
+      children[letter] = node
+
+      return node
     end
   end
-
-  # Use inheritance sparingly
-  class TrieNode < TrieBaseNode
-    attr_reader :value
-
-    def initialize(args = {})
-      super(args)
-      @value = args[:value]
-    end
-
-  end
-
 end
