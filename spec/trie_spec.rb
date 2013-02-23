@@ -71,7 +71,7 @@ describe TrieNode do
       letter = 'Z'
       node.add_child(letter)
 
-      node.children[letter].value.should == letter.downcase
+      node.children[letter.downcase].value.should == letter.downcase
     end
   end
 end

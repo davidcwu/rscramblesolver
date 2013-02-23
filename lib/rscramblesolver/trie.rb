@@ -51,8 +51,7 @@ module Rscramblesolver
 
     def add_child(letter)
       node = child(letter) ||  TrieNode.new( :value => letter.downcase )
-      children[letter] = node
-
+      children[letter.downcase] = node
       return node
     end
   end
