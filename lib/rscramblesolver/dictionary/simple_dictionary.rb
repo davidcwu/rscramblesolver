@@ -4,16 +4,17 @@ module Rscramblesolver
 
       def initialize(args = {})
         @word_reader = args[:word_reader] || WordReader.new
+        @trie              = args[:trie] || Trie.new
       end
 
       def word_list
         @word_reader.word_list
       end
 
-      # Returning false for now since I'm not implementing 
+      # Returning false for now since I'm not implementing
       # this method for a simple dictionary
-      def prefix_for_real_word?(prefix)
-        return false
+      def prefix_for_real_word?(potential_prefix)
+        return @trie.valid_prefix?(potential_prefix)
       end
 
       def real_word?(potential_word)
@@ -32,6 +33,7 @@ module Rscramblesolver
           hash = Hash.new(Set.new)
           word_list.each do |word|
             hash[word.length].add(word)
+            @trie.add(word)
           end
           return hash
         end

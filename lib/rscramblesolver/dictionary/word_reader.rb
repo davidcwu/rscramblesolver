@@ -9,7 +9,6 @@ module Rscramblesolver
 			private
 				include Zlib
 
-
 				def parse_file(path)
 					word_list = []
 					open(path, 'r') do |file|

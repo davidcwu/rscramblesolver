@@ -16,6 +16,10 @@ describe Trie do
     it 'should respond to add' do
       trie.should respond_to(:add)
     end
+
+    it 'should succeed when two words with the same prefix are added' do
+      trie.add('hey').add('hem')
+    end
   end
 
   describe :valid_prefix? do
