@@ -1,8 +1,6 @@
 Ruby Scramble Solver [![Build Status](https://travis-ci.org/dcwu/rscramblesolver.png)](https://travis-ci.org/dcwu/rscramblesolver)
 =====
 
-# Rscramblesolver
-
 A word finder for Scramble-related games
 
 ## Installation
