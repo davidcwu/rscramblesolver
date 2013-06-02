@@ -1,6 +1,6 @@
 # Rscramblesolver
 
-TODO: Write a gem description
+A word finder for Scramble-related games
 
 ## Installation
 
@@ -18,7 +18,7 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+Use RscrambleSolver::BoardCreator.create_board
 
 ## Contributing
 

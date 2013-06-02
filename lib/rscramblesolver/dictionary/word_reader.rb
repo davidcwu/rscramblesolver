@@ -1,3 +1,5 @@
+require 'zlib'
+
 module Rscramblesolver
 	module Dictionary
 		class WordReader
