@@ -1,3 +1,6 @@
+Ruby Scramble Solver [![Build Status](https://travis-ci.org/dcwu/rscramblesolver.png)](https://travis-ci.org/dcwu/rscramblesolver)
+=====
+
 # Rscramblesolver
 
 A word finder for Scramble-related games
@@ -18,7 +21,7 @@ Or install it yourself as:
 
 ## Usage
 
-Use RscrambleSolver::BoardCreator.create_board
+Run 'rscramblesolver' from the command line.
 
 ## Contributing
 

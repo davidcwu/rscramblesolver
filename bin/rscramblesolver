@@ -1,10 +1,10 @@
 #!/usr/bin/env ruby
 
 begin
-  require 'rscramblesolver/rscramblesolver'
+  require 'rscramblesolver'
 rescue LoadError
   require 'rubygems'
-  require 'rscramblesolver/rscramblesolver'
+  require 'rscramblesolver'
 end
 
 include Rscramblesolver
@@ -12,9 +12,7 @@ include Rscramblesolver
 board_creator = BoardCreator.new
 board = board_creator.create_board
 
-search = Search.new(
-    board: board
-  )
+search = Search.new(board: board)
 
 search_results = search.execute
 puts search_results
